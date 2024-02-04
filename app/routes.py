@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
-import app.util
+from app.utils.helper import interpolate, compute_image, make_image
 
-
-# Create a Blueprint for your routes
 main_bp = Blueprint("main", __name__)
 
 
@@ -16,7 +14,7 @@ def process_coordinates():
     coordinates = request.json.get('coordinates')
     plot_type = request.json.get('plotType')
     color_map = request.json.get('colorMap')
-    x_new, y_new = app.util.interpolate(coordinates)
-    arr = app.util.compute_image(y_new, plot_type)
-    img = app.util.make_image(arr, color_map)
+    x_new, y_new = interpolate(coordinates)
+    arr = compute_image(y_new, plot_type)
+    img = make_image(arr, color_map)
     return jsonify({'image': img})
