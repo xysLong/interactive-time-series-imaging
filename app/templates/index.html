@@ -9,30 +9,40 @@
 </head>
 <body>
 <div class="left-column">
-    <p><b>Interactive Time Series Imaging</b></p>
+    <h2><b>Interactive Time Series Imaging</b></h2>
     <br>
     <p>Draw an x-monotonic curve in the right panel.</p>
     <br>
-    <label for="plotType">Imaging Method:</label>
+    <label for="plotType"><b>Imaging Method:</b></label>
     <select id="plotType" onchange="changePlotType()">
         <option value="gasf">Gramian Angular Summation Field</option>
         <option value="gadf">Gramian Angular Difference Field</option>
         <option value="mtf8">Markov Transition Field (8 bins)</option>
         <option value="mtf16">Markov Transition Field (16 bins)</option>
     </select>
-    <br>
-    <label for="colormap">Color Map:</label>
+
+    <label for="colormap"><b>Color Map:</b></label>
     <select id="colormap" onchange="updatePlot()">
-        <option value="seismic">seismic</option>
-        <option value="viridis">viridis</option>
+        <option value="seismic">seismic (GAF default)</option>
+        <option value="viridis">viridis (MTF default)</option>
     </select>
 
     <div style="flex-grow: 1;"></div>
 
+    <p>References:</p>
+    <ul>
+        <li><small>Vortmann et al. (2022). <i>Multimodal EEG and Eye Tracking Feature Fusion Approaches for Attention
+            Classification in Hybrid BCIs.</i> Frontiers in Computer Science.</small></li>
+        <li><small>Vortmann et al. (2021). <i>Imaging Time Series of Eye Tracking Data to Classify Attentional
+            States.</i> Frontiers in Neuroscience.</small></li>
+        <li><small>Wang and Oates (2015). <i>Imaging Time-Series to Improve Classification and Imputation.</i>
+            International Joint Conference on Artificial Intelligence.</small></li>
+    </ul>
+
     <a href="https://github.com/xysLong/interactive-time-series-imaging"
        target="_blank"
        style="text-decoration: none; color: #3498db; font-weight: bold;">
-        GitHub
+        GitHub repository
     </a>
 </div>
 <div class="right-column">
