@@ -3,17 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curve Drawer</title>
+    <title>Interactive Time Series Imaging</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap">
     <style>
         body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            background-color: #f8f8f8;
+            margin: 0;
+            height: 100vh;
+        }
+
+        .left-column {
+            width: 30%;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+        }
+
+        .right-column {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        select, p {
+            margin-bottom: 10px;
         }
 
         canvas {
             margin-top: 10px;
-            border: 1px solid #000;
+            width: 300px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
         }
 
         #plotContainer {
@@ -24,28 +52,37 @@
     </style>
 </head>
 <body>
+<div class="left-column">
+    <p><b>Interactive Time Series Imaging</b></p>
+    <br>
+    <p>Draw an x-monotonic curve in the right panel.</p>
+    <br>
+    <label for="plotType">Imaging Method:</label>
+    <select id="plotType" onchange="changePlotType()">
+        <option value="gasf">Gramian Angular Summation Field</option>
+        <option value="gadf">Gramian Angular Difference Field</option>
+        <option value="mtf8">Markov Transition Field (8 bins)</option>
+        <option value="mtf16">Markov Transition Field (16 bins)</option>
+    </select>
+    <br>
+    <label for="colormap">Color Map:</label>
+    <select id="colormap" onchange="updatePlot()">
+        <option value="seismic">seismic</option>
+        <option value="viridis">viridis</option>
+    </select>
 
-<label for="plotType">Select Plot Type:</label>
-<select id="plotType" onchange="changePlotType()">
-    <option value="gasf">Gramian Angular Summation Field</option>
-    <option value="gadf">Gramian Angular Difference Field</option>
-    <option value="mtf8">Markov Transition Field (8 bins)</option>
-    <option value="mtf16">Markov Transition Field (16 bins)</option>
-</select>
+    <div style="flex-grow: 1;"></div>
 
-<label for="colormap">Select Color Map:</label>
-<select id="colormap" onchange="updatePlot()">
-    <option value="seismic">seismic</option>
-    <option value="viridis">viridis</option>
-</select>
-
-<div>
-    <p>Draw an x-monotonic time series here:</p>
-    <canvas id="curveCanvas" width="300" height="200"></canvas>
+    <a href="https://github.com/xysLong/interactive-time-series-imaging"
+       target="_blank"
+       style="text-decoration: none; color: #3498db; font-weight: bold;">
+        GitHub
+    </a>
 </div>
-
-<div id="plotContainer"></div>
-
+<div class="right-column">
+    <canvas id="curveCanvas" height="200"></canvas>
+    <div id="plotContainer"></div>
+</div>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
