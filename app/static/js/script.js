@@ -151,21 +151,17 @@ document.addEventListener("DOMContentLoaded", function () {
             await fadeOut();
             [startX, endX, previousX, previousY, t, alpha] = initialize();
         }
-        t += animationSpeed;
-        const currentX = startX + (endX - startX) * t;
-        const currentY = f(currentX);
-
-        ctx.beginPath();
-        ctx.moveTo(previousX, previousY);
-        ctx.lineTo(currentX, currentY);
-        ctx.stroke();
-        ctx.closePath();
-
-        previousX = currentX;
-        previousY = currentY;
-
-
         if (isAnimating) {
+            t += animationSpeed;
+            const currentX = startX + (endX - startX) * t;
+            const currentY = f(currentX);
+            ctx.beginPath();
+            ctx.moveTo(previousX, previousY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+            ctx.closePath();
+            previousX = currentX;
+            previousY = currentY;
             animationId = requestAnimationFrame(drawRandomStroke);
         }
     }
