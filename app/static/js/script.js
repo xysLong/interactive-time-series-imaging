@@ -29,7 +29,7 @@ function draw(e) {
     if (!isDrawing) return;
     const currentX_ = e.pageX - canvas.offsetLeft;
     const currentY_ = e.pageY - canvas.offsetTop;
-    if (currentX_ !== currentX || Math.abs(currentY_ - currentY) >= 10) {
+    if (currentX_ !== currentX || currentY_ !== currentY) {
         currentX = currentX_;
         currentY = currentY_;
         coordinates.push({x: currentX, y: currentY});
@@ -105,11 +105,13 @@ function findNonIncreasingSequences() {
     let sequence = [];
 
     for (let i = 1; i < coordinates.length; i++) {
-        if (coordinates[i].x <= coordinates[i - 1].x) {
-            sequence.push(coordinates[i - 1]);
+        const pointThis = coordinates[i - 1];
+        const pointNext = coordinates[i];
+        if (pointNext.x < pointThis.x) {
+            sequence.push(pointThis);
         } else {
             if (sequence.length > 0) {
-                sequence.push(coordinates[i - 1]);
+                sequence.push(pointThis);
                 result.push(sequence);
                 sequence = [];
             }

@@ -6,9 +6,16 @@ import base64
 import io
 
 
+def mean_y_by_group_x(x, y):
+    x_unique = np.unique(x)
+    y_means = [np.mean(y[x == val]) for val in x_unique]
+    return x_unique, y_means
+
+
 def interpolate(data):
-    x_old = np.array([d['x'] for d in data])
-    y_old = np.array([-d['y'] for d in data])
+    x = np.array([d['x'] for d in data])
+    y = np.array([-d['y'] for d in data])
+    x_old, y_old = mean_y_by_group_x(x, y)
     x_new = np.arange(start=np.min(x_old), stop=np.max(x_old) + 1, step=1)
     y_new = np.interp(x_new, x_old, y_old)
     return x_new, y_new
