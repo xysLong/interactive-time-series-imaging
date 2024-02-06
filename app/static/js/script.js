@@ -87,7 +87,7 @@ function isMonotonicallyIncreasing() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const centerY = 0.5 * canvas.height;
-    const amplitude = 50;
+    const amplitude = 30;
     const frequency = 0.05;
     const animationSpeed = 0.02;
 
@@ -96,14 +96,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let endX = (3 * canvas.width / 4) + Math.random() * (canvas.width / 4);
         let previousX = startX;
         let previousY = centerY + amplitude * Math.sin(frequency * startX);
-        let t = 0;
-        return [startX, endX, previousX, previousY, t]
+        return [startX, endX, previousX, previousY, 0., 1.]
     }
 
-    let [startX, endX, previousX, previousY, t] = initialize();
+    let [startX, endX, previousX, previousY, t, alpha] = initialize();
     let animationId;
-    let isAnimationStopped = false;
-    let alpha = 1.0;
+    let isAnimating = true;
 
     async function drawRandomStroke() {
         const currentX = startX + (endX - startX) * t;
@@ -120,27 +118,30 @@ document.addEventListener("DOMContentLoaded", function () {
         t += animationSpeed;
         if (t >= 1.0) {
             await delay(1000);
-            while (alpha > 0) {
-                alpha -= 0.05;
-                const tempCanvas = document.createElement('canvas');
-                if (canvas instanceof HTMLCanvasElement) {
-                    tempCanvas.width = canvas.width;
-                    tempCanvas.height = canvas.height;
-                    const tempContext = tempCanvas.getContext('2d');
-                    tempContext.drawImage(canvas, 0, 0);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.globalAlpha = alpha;
-                    ctx.drawImage(tempCanvas, 0, 0);
-                    ctx.globalAlpha = 1.0;
-                    await delay(100);
-                }
-            }
-            alpha = 1;
+            await fadeOut();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            [startX, endX, previousX, previousY, t] = initialize();
+            [startX, endX, previousX, previousY, t, alpha] = initialize();
         }
-        if (!isAnimationStopped) {
+        if (isAnimating) {
             animationId = requestAnimationFrame(drawRandomStroke);
+        }
+    }
+
+    async function fadeOut() {
+        while (isAnimating && alpha > 0) {
+            alpha -= 0.05;
+            const tempCanvas = document.createElement('canvas');
+            if (canvas instanceof HTMLCanvasElement) {
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempContext = tempCanvas.getContext('2d');
+                tempContext.drawImage(canvas, 0, 0);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = alpha;
+                ctx.drawImage(tempCanvas, 0, 0);
+                ctx.globalAlpha = 1.0;
+                await delay(100);
+            }
         }
     }
 
@@ -149,14 +150,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function stopAnimation() {
-        isAnimationStopped = true;
+        isAnimating = false;
         cancelAnimationFrame(animationId);
         canvas.removeEventListener("mousemove", stopAnimation);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
 
-    drawRandomStroke().then(() => {
-    });
+    drawRandomStroke().then();
     canvas.addEventListener("mousemove", stopAnimation);
 });
