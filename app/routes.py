@@ -12,9 +12,9 @@ def index():
 @main_bp.route('/process_coordinates', methods=['POST'])
 def process_coordinates():
     coordinates = request.json.get('coordinates')
-    plot_type = request.json.get('plotType')
-    color_map = request.json.get('colorMap')
+    imaging = request.json.get('imaging')
+    colormap = request.json.get('colormap')
     x_new, y_new = interpolate(coordinates)
-    arr = compute_image(y_new, plot_type)
-    img = make_image(arr, color_map)
+    arr = compute_image(y_new, imaging)
+    img = make_image(arr, colormap)
     return jsonify({'image': img})

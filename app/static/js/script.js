@@ -1,6 +1,5 @@
 let isDrawing = false;
 let currentX = -1;
-let currentY = -1;
 let coordinates = [];
 
 const canvas = document.getElementById('curveCanvas');
@@ -19,7 +18,7 @@ function startDrawing(e) {
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'black';
     currentX = e.pageX - canvas.offsetLeft;
-    currentY = e.pageY - canvas.offsetTop;
+    const currentY = e.pageY - canvas.offsetTop;
     coordinates.push({x: currentX, y: currentY});
     ctx.beginPath();
     ctx.moveTo(currentX, currentY);
@@ -28,49 +27,33 @@ function startDrawing(e) {
 function draw(e) {
     if (!isDrawing) return;
     const currentX_ = e.pageX - canvas.offsetLeft;
-    const currentY_ = e.pageY - canvas.offsetTop;
-    if (currentX_ !== currentX || currentY_ !== currentY) {
+    if (currentX_ > currentX) {
         currentX = currentX_;
-        currentY = currentY_;
+        const currentY = e.pageY - canvas.offsetTop;
         coordinates.push({x: currentX, y: currentY});
         ctx.lineTo(currentX, currentY);
         ctx.stroke();
     }
+
 }
 
 function stopDrawing() {
     if (!isDrawing) return;
     ctx.closePath();
     isDrawing = false;
-    const nonIncreasingSequences = findNonIncreasingSequences();
-    if (nonIncreasingSequences.length > 0) {
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'coral';
-        for (const sequence of nonIncreasingSequences) {
-            ctx.beginPath();
-            ctx.moveTo(sequence[0].x, sequence[0].y);
-            for (let i = 1; i < sequence.length; i++) {
-                ctx.lineTo(sequence[i].x, sequence[i].y);
-            }
-            ctx.stroke();
-            ctx.closePath();
-        }
-        alert('Warning: x values are not monotonically increasing!');
-    } else {
-        updatePlot();
-    }
+    updatePlot();
 }
 
-function changePlotType() {
-    const plotType = document.getElementById('plotType').value.toString();
-    document.getElementById("colormap").value = plotType.startsWith('mtf') ? 'viridis' : 'seismic';
+function changeImaging() {
+    const imaging = document.getElementById('imaging').value.toString();
+    document.getElementById("colormap").value = imaging.startsWith('mtf') ? 'viridis' : 'seismic';
     updatePlot();
 }
 
 function updatePlot() {
     if (coordinates.length === 0) return;
-    const plotType = document.getElementById('plotType').value.toString();
-    const colorMap = document.getElementById('colormap').value.toString();
+    const imaging = document.getElementById('imaging').value.toString();
+    const colormap = document.getElementById('colormap').value.toString();
     const plotContainer = document.getElementById('plotContainer');
     plotContainer.innerHTML = '';
     fetch('/process_coordinates', {
@@ -80,8 +63,8 @@ function updatePlot() {
         },
         body: JSON.stringify({
             "coordinates": coordinates,
-            "plotType": plotType,
-            "colorMap": colorMap
+            "imaging": imaging,
+            "colormap": colormap
         }),
     })
         .then(response => response.json())
@@ -97,33 +80,6 @@ function updatePlot() {
             console.log(minX, maxX, plotImage.style.width, plotImage.style.marginLeft);
             plotContainer.appendChild(plotImage);
         });
-}
-
-
-function findNonIncreasingSequences() {
-    const result = [];
-    let sequence = [];
-
-    for (let i = 1; i < coordinates.length; i++) {
-        const pointThis = coordinates[i - 1];
-        const pointNext = coordinates[i];
-        if (pointNext.x < pointThis.x) {
-            sequence.push(pointThis);
-        } else {
-            if (sequence.length > 0) {
-                sequence.push(pointThis);
-                result.push(sequence);
-                sequence = [];
-            }
-        }
-    }
-
-    if (sequence.length > 0) {
-        sequence.push(coordinates[coordinates.length - 1]);
-        result.push(sequence);
-    }
-
-    return result;
 }
 
 

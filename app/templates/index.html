@@ -11,10 +11,10 @@
 <div class="left-column">
     <h2><b>Interactive Time Series Imaging</b></h2>
     <br>
-    <p>Draw an x-monotonic curve in the right panel.</p>
+    <p>Draw a curve with increasing x-values in the right panel. The imaging may take a few seconds.</p>
     <br>
-    <label for="plotType"><b>Imaging Method:</b></label>
-    <select id="plotType" onchange="changePlotType()">
+    <label for="imaging"><b>Imaging Method:</b></label>
+    <select id="imaging" onchange="changeImaging()">
         <option value="gasf">Gramian Angular Summation Field</option>
         <option value="gadf">Gramian Angular Difference Field</option>
         <option value="mtf8">Markov Transition Field (8 bins)</option>
