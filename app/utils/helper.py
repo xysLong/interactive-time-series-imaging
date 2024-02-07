@@ -14,7 +14,19 @@ def interpolate(data):
     return x_new, y_new
 
 
-def compute_image(y_new, imaging):
+def __custom_gramian_angular_difference_field(y):
+    y_min = np.min(y)
+    y_max = np.max(y)
+    y = (2 * y[0] - y_max - y_min) / (y_max - y_min)
+    phi = np.arccos(y).reshape(-1, 1)
+    # Different definitions exist
+    # Wang 2015: np.sin(phi - phi.T), also pyts implementation
+    # Yang 2020: np.sin(phi + phi.T)
+    # Maybe ...: np.cos(phi - phi.T)
+    return np.sin(phi - phi.T)
+
+
+def compute_image(y_new, imaging: str):
     y_new = np.expand_dims(y_new, axis=0)
     if imaging == 'gasf':
         method = GramianAngularField(method='summation')
@@ -24,8 +36,8 @@ def compute_image(y_new, imaging):
         method = MarkovTransitionField(n_bins=16)
     else:
         method = MarkovTransitionField(n_bins=8)
-    img = method.fit_transform(y_new)
-    return img[0]  # type: ignore
+    img = method.fit_transform(y_new)[0]  # type: ignore
+    return img
 
 
 def make_image(img, colormap):
