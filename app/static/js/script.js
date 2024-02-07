@@ -1,6 +1,8 @@
 let isDrawing = false;
 let currentX = -1;
 let coordinates = [];
+let gafColormapOptions = ['seismic', 'coolwarm', 'bwr', 'Spectral', 'PiYG', 'RdBu'];
+let mtfColormapOptions = ['viridis', 'plasma', 'inferno', 'magma', 'cividis'];
 
 const canvas = document.getElementById('curveCanvas');
 const ctx = canvas.getContext('2d');
@@ -45,10 +47,24 @@ function stopDrawing() {
 }
 
 function changeImaging() {
-    const imaging = document.getElementById('imaging').value.toString();
-    document.getElementById("colormap").value = imaging.startsWith('mtf') ? 'viridis' : 'seismic';
+    updateColormapOptions();
     updatePlot();
 }
+
+function updateColormapOptions() {
+    const imaging = document.getElementById('imaging').value.toString();
+    const selectElement = document.getElementById("colormap");
+    selectElement.innerHTML = "";
+    let colormapOptions = imaging.startsWith('mtf') ? mtfColormapOptions : gafColormapOptions;
+    colormapOptions.forEach(function (option) {
+        const optionElement = document.createElement("option");
+        optionElement.value = option;
+        optionElement.textContent = option;
+        selectElement.appendChild(optionElement);
+    });
+    document.getElementById("colormap").value = colormapOptions[0];
+}
+
 
 function updatePlot() {
     if (coordinates.length === 0) return;
@@ -84,6 +100,7 @@ function updatePlot() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    updateColormapOptions();
     const centerY = 0.5 * canvas.height;
     const amplitude = 30;
     const frequency = 0.05;
