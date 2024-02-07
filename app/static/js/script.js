@@ -1,3 +1,4 @@
+let isMTF = false;
 let isDrawing = false;
 let currentX = -1;
 let coordinates = [];
@@ -47,15 +48,18 @@ function stopDrawing() {
 }
 
 function changeImaging() {
-    updateColormapOptions();
+    const imaging = document.getElementById('imaging').value.toString();
+    if (isMTF !== imaging.startsWith('mtf')) {
+        isMTF = !isMTF;
+        updateColormapOptions();
+    }
     updatePlot();
 }
 
 function updateColormapOptions() {
-    const imaging = document.getElementById('imaging').value.toString();
     const selectElement = document.getElementById("colormap");
     selectElement.innerHTML = "";
-    let colormapOptions = imaging.startsWith('mtf') ? mtfColormapOptions : gafColormapOptions;
+    let colormapOptions = isMTF ? mtfColormapOptions : gafColormapOptions;
     colormapOptions.forEach(function (option) {
         const optionElement = document.createElement("option");
         optionElement.value = option;
@@ -64,7 +68,6 @@ function updateColormapOptions() {
     });
     document.getElementById("colormap").value = colormapOptions[0];
 }
-
 
 function updatePlot() {
     if (coordinates.length === 0) return;
